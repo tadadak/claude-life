@@ -1,5 +1,5 @@
 ---
-name: daily-review
+name: daily
 description: 일일 정리. USE WHEN user says "오늘 정리", "일일 정리", "하루 마무리", "end of day"
 ---
 

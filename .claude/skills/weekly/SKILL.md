@@ -1,5 +1,5 @@
 ---
-name: weekly-review
+name: weekly
 description: 주간 회고. USE WHEN user says "주간 회고", "weekly review", "이번주 정리"
 ---
 
