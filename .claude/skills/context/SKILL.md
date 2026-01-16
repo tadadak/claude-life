@@ -60,8 +60,7 @@ done
 gh issue list --repo {owner}/{repo} --state open --limit 10
 ```
 
-**여러 GitHub 계정 사용 시:**
-PAT 자동 전환 스크립트 설정 (CLAUDE.md 참고)
+**Note:** GitHub PAT 설정은 환경에 맞게 구성하세요.
 
 ### 6. 관련 코드 파일 (막힌 점 있을 때)
 

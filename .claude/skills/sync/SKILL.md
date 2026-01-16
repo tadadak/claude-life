@@ -5,7 +5,7 @@ description: 프로젝트 동기화. USE WHEN user says "/sync", "프로젝트 �
 
 # Sync Skill
 
-~/Develop/work-* 폴더를 스캔해서 프로젝트를 등록/업데이트합니다.
+프로젝트 폴더를 스캔해서 등록/업데이트합니다.
 
 ## Trigger
 
@@ -19,7 +19,7 @@ description: 프로젝트 동기화. USE WHEN user says "/sync", "프로젝트 �
 ### 1. 프로젝트 폴더 스캔
 
 ```bash
-find ~/Develop/work-* -maxdepth 1 -type d | while read dir; do
+find ~/Develop/projects -maxdepth 1 -type d | while read dir; do
   if [ -d "$dir/.git" ] || [ -f "$dir/package.json" ] || [ -f "$dir/pubspec.yaml" ] || [ -f "$dir/pom.xml" ] || [ -f "$dir/build.gradle" ]; then
     echo "$dir"
   fi
@@ -67,19 +67,35 @@ git -C "$project_path" log --oneline -3
 [ -f "$project_path/CLAUDE.md" ] && echo "true" || echo "false"
 ```
 
-### 3. 카테고리 결정
-
+**실제 마지막 작업일 (중요!)**:
 ```bash
-# Git remote URL 기반 - 사용자 환경에 맞게 수정
-# 예: organization 이름으로 구분
-if [[ "$remote_url" == *"my-team-org"* ]]; then
-  category="team"
+# last_worked는 오늘 날짜가 아니라 실제 마지막 커밋 날짜!
+git -C "$project_path" log -1 --format="%cs" 2>/dev/null
+# 결과 예: 2025-12-30
+```
+
+**휴면 상태 자동 감지**:
+```bash
+last_commit=$(git -C "$project_path" log -1 --format="%cs" 2>/dev/null)
+cutoff=$(date -v-60d +%Y-%m-%d)  # 60일 전
+if [[ "$last_commit" < "$cutoff" ]]; then
+  status="dormant"  # 60일 이상 비활동 → 휴면
 else
-  category="personal"
+  status="active"
 fi
 ```
 
-> **커스터마이징**: 자신의 GitHub organization 이름에 맞게 수정하세요.
+### 3. 카테고리 결정
+
+```bash
+# Git remote URL 기반으로 카테고리 결정
+# 예: organization별 또는 프로젝트 유형별로 분류
+if [[ "$remote_url" == *"your-org"* ]]; then
+  category="work"
+else
+  category="personal"  # default
+fi
+```
 
 ### 4. 프로젝트 노트 생성/업데이트
 
@@ -127,8 +143,8 @@ CLAUDE.md 없는 프로젝트 발견 시:
 
 ```
 다음 프로젝트에 CLAUDE.md가 없습니다:
-- ~/Develop/work-flutter/new-app
-- ~/Develop/work-python/script
+- ~/Develop/projects/app-name
+- ~/Develop/projects/script-name
 
 CLAUDE.md를 생성할까요? (y/n)
 ```
@@ -176,9 +192,9 @@ CLAUDE.md를 생성할까요? (y/n)
 - 변경 없음: 1개
 
 ⚠️ CLAUDE.md 없음: 3개
-- work-flutter/new-app
-- work-python/scripts
-- work-java/util
+- projects/app-name
+- projects/script-name
+- projects/util-name
 
 CLAUDE.md 생성할까요?
 ```
