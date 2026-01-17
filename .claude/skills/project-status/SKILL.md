@@ -1,6 +1,6 @@
 ---
-name: status
-description: 프로젝트 상태 업데이트. USE WHEN user updates project status, milestone, or goal.
+name: project-status
+description: 프로젝트 상태 업데이트. USE WHEN user says "/project-status", "프로젝트 상태", "상태 업데이트"
 ---
 
 # Project Status Skill
